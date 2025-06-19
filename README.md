@@ -1,0 +1,206 @@
+# Craftista - Microservices Application
+
+A complete microservices application with CI/CD pipeline, Kubernetes deployment, and GitOps workflow.
+
+## Architecture
+
+### Microservices
+- **Frontend** (Node.js) - Port 3000
+- **Catalogue** (Python Flask) - Port 5000 + MongoDB
+- **Recommendation** (Go) - Port 8000
+- **Voting** (Java Spring Boot) - Port 8060 + PostgreSQL
+
+### Infrastructure
+- **CI/CD**: Jenkins Pipeline
+- **Containerization**: Docker
+- **Orchestration**: Kubernetes
+- **GitOps**: ArgoCD
+- **Configuration Management**: Kustomize
+
+## Project Structure
+
+```
+craftista/
+├── craftista-code/           # Application source code
+│   ├── frontend/            # Node.js frontend service
+│   ├── catalogue/           # Python Flask catalogue service
+│   ├── recommendation/      # Go recommendation service
+│   └──voting/             # Java Spring Boot voting service
+|
+├── craftista-k8s/          # Kubernetes manifests
+│   ├── base/               # Base Kustomize manifests
+│   ├── overlays/           # Environment-specific overlays
+│   │   ├── dev/           # Development environment
+│   │   └── staging/       # Staging environment
+│   └── argocd/            # ArgoCD application manifests
+└── README.md              # This file
+```
+
+## Quick Start
+
+### 1. Prerequisites
+- Docker
+- Kubernetes cluster
+- Jenkins
+- ArgoCD
+- kubectl with cluster access
+
+### 2. Build and Deploy
+
+#### Option A: Manual Deployment
+```bash
+# Build images locally
+cd craftista-code/frontend && docker build -t craftista-frontend .
+cd ../catalogue && docker build -t craftista-catalogue .
+cd ../recommendation && docker build -t craftista-recommendation .
+cd ../voting && docker build -t craftista-voting .
+
+# Deploy to Kubernetes
+cd ../../craftista-k8s
+kubectl apply -k overlays/dev/
+```
+
+#### Option B: CI/CD Pipeline
+```bash
+# Setup Jenkins pipeline pointing to your repository
+# Pipeline will automatically:
+# 1. Build Docker images
+# 2. Push to DockerHub
+# 3. Update K8s manifests
+# 4. ArgoCD deploys automatically
+```
+
+### 3. Access Applications
+
+#### Development Environment
+```bash
+# Get service URLs
+kubectl get svc -n dev
+
+# Port forward for local access
+kubectl port-forward svc/craftista-frontend-service 3000:3000 -n dev
+```
+
+#### Staging Environment
+```bash
+# Get service URLs
+kubectl get svc -n staging
+
+# Port forward for local access
+kubectl port-forward svc/craftista-frontend-service 3000:3000 -n staging
+```
+
+## CI/CD Pipeline
+
+### Jenkins Pipeline Features
+- **Parallel Builds**: All services build simultaneously
+- **Docker Registry**: Pushes to DockerHub
+- **GitOps Integration**: Updates K8s manifests automatically
+- **Versioning**: Uses build numbers for image tags
+
+### Required Jenkins Credentials
+- `dockerhub`: DockerHub username/password
+- `git-credentials`: GitHub username/token
+
+## Kubernetes Deployment
+
+### Environments
+- **Development** (`dev` namespace)
+- **Staging** (`staging` namespace)
+
+### RBAC Configuration
+- Environment-specific service accounts
+- Role-based access control
+- Namespace isolation
+
+### Storage
+- **MongoDB**: 1Gi persistent storage for catalogue
+- **PostgreSQL**: 1Gi persistent storage for voting
+
+## GitOps with ArgoCD
+
+### Setup ArgoCD Applications
+```bash
+# Deploy ArgoCD applications
+kubectl apply -f craftista-k8s/argocd/craftista-dev-app.yaml
+kubectl apply -f craftista-k8s/argocd/craftista-staging-app.yaml
+
+# Access ArgoCD UI
+kubectl port-forward svc/argocd-server -n argocd 8080:443
+```
+
+### Features
+- **Automated Sync**: Deploys changes from Git automatically
+- **Self-Healing**: Corrects configuration drift
+- **Rollback**: Easy rollback to previous versions
+
+## Development Workflow
+
+1. **Code Changes**: Developers push code to repository
+2. **CI Pipeline**: Jenkins builds and tests applications
+3. **Image Build**: Docker images built and pushed to registry
+4. **Manifest Update**: K8s manifests updated with new image tags
+5. **GitOps Deployment**: ArgoCD detects changes and deploys
+6. **Verification**: Applications running in target environments
+
+## Monitoring and Troubleshooting
+
+### Check Application Status
+```bash
+# Pod status
+kubectl get pods -n dev
+kubectl get pods -n staging
+
+# Service status
+kubectl get svc -n dev
+kubectl get svc -n staging
+
+# Logs
+kubectl logs <pod-name> -n <namespace>
+```
+
+### ArgoCD Status
+```bash
+# Application status
+kubectl get applications -n argocd
+
+# Sync status
+argocd app get craftista-dev
+argocd app get craftista-staging
+```
+
+## Configuration
+
+### Environment Variables
+- Services communicate via Kubernetes service discovery
+- Database connections configured via ConfigMaps
+- Secrets managed via Kubernetes Secrets
+
+### Scaling
+```bash
+# Scale deployments
+kubectl scale deployment craftista-frontend --replicas=3 -n dev
+```
+
+## Security
+
+- **Non-root containers**: All services run as non-root users
+- **RBAC**: Role-based access control per environment
+- **Network policies**: Service-to-service communication control
+- **Secret management**: Sensitive data in Kubernetes Secrets
+
+## Contributing
+
+1. Fork the repository
+2. Create feature branch
+3. Make changes and test locally
+4. Submit pull request
+5. CI/CD pipeline will handle deployment
+
+## Support
+
+For issues and questions:
+- Check application logs: `kubectl logs <pod-name> -n <namespace>`
+- Verify ArgoCD sync status
+- Review Jenkins pipeline logs
+- Check Kubernetes events: `kubectl get events -n <namespace>`
