@@ -6,6 +6,3 @@ resources:
   - craftista-frontend-all.yaml
   - craftista-recommend-all.yaml
   - craftista-voting-all.yaml
-
-# This will be overridden by overlays
-namespace: default

@@ -4,8 +4,9 @@ kind: Kustomization
 namespace: staging
 
 resources:
-  - ../../
-  - ../../stage-namespace.yaml
-  - ../../stage-serviceaccount.yaml
-  - ../../stage-role.yaml
-  - ../../stage-rolebinding.yaml
+  - ../../base
+  - stage-namespace.yaml
+  - stage-serviceaccount.yaml
+  - stage-role.yaml
+  - stage-rolebinding.yaml
+ 

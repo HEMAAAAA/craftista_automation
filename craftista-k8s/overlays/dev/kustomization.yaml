@@ -4,8 +4,8 @@ kind: Kustomization
 namespace: dev
 
 resources:
-  - ../../
-  - ../../dev-namespace.yaml
-  - ../../dev-serviceaccount.yaml
-  - ../../dev-role.yaml
-  - ../../dev-rolebinding.yaml
+  - ../../base
+  - dev-namespace.yaml
+  - dev-serviceaccount.yaml
+  - dev-role.yaml
+  - dev-rolebinding.yaml
