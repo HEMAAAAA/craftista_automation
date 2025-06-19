@@ -64,7 +64,7 @@ pipeline {
                         
                         git add craftista-k8s/
                         git commit -m "Update K8s manifests to version ${VERSION} [ci skip]" || echo "No changes to commit"
-                        git push https://${GIT_CREDENTIALS_USR}:${GIT_CREDENTIALS_PSW}@github.com/hema995/craftista.git HEAD:${BRANCH_NAME} || echo "Nothing to push"
+                        git push https://${GIT_CREDENTIALS_USR}:${GIT_CREDENTIALS_PSW}@github.com/HEMAAAAA/craftista_automation.git HEAD:main || echo "Nothing to push"
                     '''
                 }
             }
