@@ -1,0 +1,6 @@
+Flask
+gunicorn
+requests
+flask_cors
+psycopg2-binary
+pymongo
