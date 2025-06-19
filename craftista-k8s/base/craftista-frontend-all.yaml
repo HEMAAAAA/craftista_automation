@@ -47,7 +47,7 @@ spec:
     spec:
       containers:
         - name: craftista-frontend
-          image: hema995/craftista-frontend:2
+          image: hema995/craftista-frontend:3
           ports:
             - containerPort: 3000
           resources:
