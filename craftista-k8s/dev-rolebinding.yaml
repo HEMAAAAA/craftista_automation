@@ -4,9 +4,9 @@ metadata:
   name: dev-rolebinding
   namespace: dev
 subjects:
-- kind: User
-  name: dev-user
-  apiGroup: rbac.authorization.k8s.io
+- kind: ServiceAccount
+  name: dev-serviceaccount
+  namespace: dev
 roleRef:
   kind: Role
   name: dev-role
