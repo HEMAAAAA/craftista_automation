@@ -34,7 +34,7 @@ spec:
     spec:
       containers:
         - name: craftista-recommend
-          image: hema995/craftista-recommendation:latest
+          image: hema995/craftista-recommendation:2
           ports:
             - containerPort: 8000
           resources:
