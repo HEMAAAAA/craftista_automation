@@ -113,7 +113,7 @@ spec:
     spec:
       containers:
         - name: craftista-catalog
-          image: hema995/craftista-catalogue:3
+          image: hema995/craftista-catalogue:4
           ports:
             - containerPort: 5000
           envFrom:
