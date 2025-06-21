@@ -2,7 +2,7 @@
 environment: staging
 
 global:
-  imageTag: latest
+  imageTag: "1"
 
 # Production-like resources for staging
 frontend:

@@ -34,12 +34,24 @@ kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.pas
 ```
 
 ### 4. Deploy Applications
+
+#### Kustomize-based Applications
 ```bash
-# Deploy Craftista applications
+# Deploy Craftista applications (Kustomize)
 kubectl apply -f craftista-dev-app.yaml
 kubectl apply -f craftista-staging-app.yaml
+```
 
-# Verify deployment
+#### Helm-based Applications
+```bash
+# Deploy Craftista applications (Helm)
+kubectl apply -f craftista-dev-helm-app.yaml
+kubectl apply -f craftista-staging-helm-app.yaml
+```
+
+#### Verify Deployment
+```bash
+# Check all applications
 kubectl get applications -n argocd
 ```
 
@@ -65,7 +77,7 @@ kubectl get svc craftista-frontend-service -n dev -o jsonpath='{.status.loadBala
 ```
 
 #### Via ArgoCD UI
-1. Click on application (`craftista-dev` or `craftista-staging`)
+1. Click on application (`craftista-dev`, `craftista-staging`, `craftista-dev-helm`, or `craftista-staging-helm`)
 2. Click on Service resources (e.g., `craftista-frontend-service`)
 3. Check **Status** tab for External IP
 4. Or use **Network** tab for all service IPs
@@ -87,9 +99,13 @@ Once deployed, access your services:
 
 ### Manual Operations
 ```bash
-# Sync applications manually
+# Sync applications manually (Kustomize)
 argocd app sync craftista-dev
 argocd app sync craftista-staging
+
+# Sync applications manually (Helm)
+argocd app sync craftista-dev-helm
+argocd app sync craftista-staging-helm
 
 # Refresh to detect changes
 argocd app refresh craftista-dev

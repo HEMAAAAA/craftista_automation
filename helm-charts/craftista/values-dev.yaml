@@ -2,7 +2,7 @@
 environment: dev
 
 global:
-  imageTag: latest
+  imageTag: "1"
 
 # Reduced resources for dev
 frontend:

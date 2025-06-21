@@ -57,12 +57,18 @@ pipeline {
                     sh 'git config user.name "Jenkins CI"'
                     
                     sh '''
+                        # Update Kustomize manifests
                         find craftista-k8s -name "*.yaml" -type f -exec sed -i "s|image: hema995/craftista-frontend:.*|image: hema995/craftista-frontend:${VERSION}|g" {} \\;
                         find craftista-k8s -name "*.yaml" -type f -exec sed -i "s|image: hema995/craftista-catalogue:.*|image: hema995/craftista-catalogue:${VERSION}|g" {} \\;
                         find craftista-k8s -name "*.yaml" -type f -exec sed -i "s|image: hema995/craftista-recommendation:.*|image: hema995/craftista-recommendation:${VERSION}|g" {} \\;
                         find craftista-k8s -name "*.yaml" -type f -exec sed -i "s|image: hema995/craftista-voting:.*|image: hema995/craftista-voting:${VERSION}|g" {} \\;
                         
-                        git add craftista-k8s/
+                        # Update Helm values
+                        sed -i "s|imageTag: .*|imageTag: ${VERSION}|g" helm-charts/craftista/values.yaml
+                        sed -i "s|imageTag: .*|imageTag: ${VERSION}|g" helm-charts/craftista/values-dev.yaml
+                        sed -i "s|imageTag: .*|imageTag: ${VERSION}|g" helm-charts/craftista/values-staging.yaml
+                        
+                        git add craftista-k8s/ helm-charts/
                         git commit -m "Update K8s manifests to version ${VERSION} [ci skip]" || echo "No changes to commit"
                         git push https://${GIT_CREDENTIALS_USR}:${GIT_CREDENTIALS_PSW}@github.com/HEMAAAAA/craftista_automation.git HEAD:main || echo "Nothing to push"
                     '''
