@@ -1,7 +1,7 @@
 # Default values for craftista
 global:
   imageRegistry: docker.io
-  imageTag: "1"
+  imageTag: 6
   imagePullPolicy: Always
 
 # Frontend Service
