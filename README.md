@@ -15,7 +15,8 @@ A complete microservices application with CI/CD pipeline, Kubernetes deployment,
 - **Containerization**: Docker
 - **Orchestration**: Kubernetes
 - **GitOps**: ArgoCD
-- **Configuration Management**: Kustomize
+- **Configuration Management**: Kustomize + Helm
+- **Visualization**: Interactive Architecture Diagrams
 
 ## Project Structure
 
@@ -25,17 +26,23 @@ craftista/
 │   ├── frontend/            # Node.js frontend service
 │   ├── catalogue/           # Python Flask catalogue service
 │   ├── recommendation/      # Go recommendation service
-│   └──voting/             # Java Spring Boot voting service
-|
-├── craftista-k8s/          # Kubernetes manifests
+│   ├── voting/             # Java Spring Boot voting service
+│   └── Jenkinsfile         # CI/CD pipeline
+├── craftista-k8s/          # Kubernetes manifests (Kustomize)
 │   ├── base/               # Base Kustomize manifests
 │   ├── overlays/           # Environment-specific overlays
 │   │   ├── dev/           # Development environment
 │   │   └── staging/       # Staging environment
 │   └── argocd/            # ArgoCD application manifests
+├── helm-charts/            # Helm charts
+│   └── craftista/         # Main Helm chart
+│       ├── templates/     # Kubernetes templates
+│       ├── values.yaml    # Default values
+│       ├── values-dev.yaml    # Dev environment values
+│       └── values-staging.yaml # Staging environment values
+| 
 └── README.md              # This file
 ```
-
 ## Quick Start
 
 ### 1. Prerequisites
@@ -44,20 +51,22 @@ craftista/
 - Jenkins
 - ArgoCD
 - kubectl with cluster access
+- Helm (optional)
 
 ### 2. Build and Deploy
 
-#### Option A: Manual Deployment
+#### Option A: Kustomize Deployment
 ```bash
-# Build images locally
-cd craftista-code/frontend && docker build -t craftista-frontend .
-cd ../catalogue && docker build -t craftista-catalogue .
-cd ../recommendation && docker build -t craftista-recommendation .
-cd ../voting && docker build -t craftista-voting .
+# Deploy with Kustomize
+kubectl apply -k craftista-k8s/overlays/dev/
+kubectl apply -k craftista-k8s/overlays/staging/
+```
 
-# Deploy to Kubernetes
-cd ../../craftista-k8s
-kubectl apply -k overlays/dev/
+#### Option B: Helm Deployment
+```bash
+# Deploy with Helm
+helm install craftista-dev ./helm-charts/craftista -f helm-charts/craftista/values-dev.yaml -n dev --create-namespace
+helm install craftista-staging ./helm-charts/craftista -f helm-charts/craftista/values-staging.yaml -n staging --create-namespace
 ```
 
 #### Option B: CI/CD Pipeline
